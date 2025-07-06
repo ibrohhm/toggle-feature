@@ -10,6 +10,9 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/julienschmidt/httprouter"
 	"github.com/toggle-feature/connection"
+	"github.com/toggle-feature/handler"
+	"github.com/toggle-feature/repository"
+	"github.com/toggle-feature/service"
 )
 
 func main() {
@@ -39,7 +42,18 @@ func main() {
 		// Adjust status code to 204
 		w.WriteHeader(http.StatusNoContent)
 	})
+
+	mdwr_handler := handler.NewMiddleware()
+	toggleFeatureRepo := repository.NewToggleFeatureRepository(client)
+	toggleFeatureService := service.NewToggleFeatureService(toggleFeatureRepo)
+	toggleFeatureHandler := handler.NewToggleFeatureHandler(toggleFeatureService)
 	router.GET("/healthz", Healthz)
+
+	router.GET("/toggle-features", mdwr_handler.Middleware(toggleFeatureHandler.Index))
+	router.GET("/toggle-features/:id", mdwr_handler.Middleware(toggleFeatureHandler.Get))
+	router.POST("/toggle-features", mdwr_handler.Middleware(toggleFeatureHandler.Insert))
+	router.PATCH("/toggle-features/:id", mdwr_handler.Middleware(toggleFeatureHandler.Update))
+	router.DELETE("/toggle-features/:id", mdwr_handler.Middleware(toggleFeatureHandler.Delete))
 
 	port := os.Getenv("PORT")
 	if port == "" {
