@@ -38,6 +38,16 @@ when the release date arrives we just activate the toggle, and when something ba
 
 since the toggle feature is so general, you can use this approach for other cases that need to switch between features or conditions
 
+## Setup
+
+### Setup and Running the project
+```
+cp env.sample .env
+go mod download
+go run main.go
+```
+check `localhost:8005/healthz` to make sure it running well
+
 ### Build docker
 ```
 docker build --tag ibrohhm/toggle-feature . --platform linux/amd64
