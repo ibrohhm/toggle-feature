@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  toggle-feature:
+    image: ibrohhm/toggle-feature:latest
+    ports:
+      - "8005:8005"
+    container_name: toggle-feature
+    restart: unless-stopped
+    depends_on:
+      - mongodb
+    environment:
+      PORT: ${PORT}
+      MONGODB_HOST: ${MONGODB_HOST}
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    command: ["--bind_ip_all", "--noauth"]
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+volumes:
+  mongo_data:

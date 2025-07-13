@@ -37,3 +37,9 @@ to ensure the updated flow not implemented in the production before the release 
 when the release date arrives we just activate the toggle, and when something bad happens we can deactivate the toggle then the service will return to using the previous flow.
 
 since the toggle feature is so general, you can use this approach for other cases that need to switch between features or conditions
+
+### Build docker
+```
+docker build --tag ibrohhm/toggle-feature . --platform linux/amd64
+docker run --rm --name toggle-feature -p 8005:8005 -d ibrohhm/toggle-feature:latest
+```
